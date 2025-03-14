@@ -64,14 +64,22 @@ def get_investment_value(coin_id: str, currency:str):
      total = buy_amount + sell_amount
      print(f"You won a total of {total} {coin_id} worth of {total * coin_price} {currency.upper()}")
 
+@click.command()
+@click.option("--csv_file")
 def import_investments(csv_file):
     with open(csv_file) as f:
         rdr = csv.reader(f, delimiter=",")
         rows = list(rdr)
+        sql = "INSERT INTO investments VALUES(?,?,?,?,?);"
+        cur.executemany(sql, rows)
+        database.commit()
+
+        print(f"Imported {len(rows)} investments from {csv_file}")
 
 cli.add_command(show_coin_price)
 cli.add_command(add_investment)
-cli.add_command(get_investment_value)
+cli.add_command(get_investment_value) 
+cli.add_command(import_investments)
 
 if __name__=="__main__":
     database = sqlite3.connect("portfolio.db")
