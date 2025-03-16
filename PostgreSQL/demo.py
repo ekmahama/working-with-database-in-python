@@ -79,11 +79,14 @@ def add_bitcoin_investments_parameterized(sql_template, data):
 
 @click.command()
 @click.option("--sql", default=select_sql)
-@click.option('--parameter', default='bitcoin')
+@click.option('--parameter', default=None)
 def get_investments(sql, parameter):
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute(sql, (parameter,))
+    if parameter:
+        cursor.execute(sql, (parameter,))
+    else:
+        cursor.execute("SELECT * FROM investments;")
     data = cursor.fetchall()
     print(data)
     cursor.close()
