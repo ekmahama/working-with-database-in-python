@@ -91,6 +91,7 @@ cli.add_command(show_coin_price)
 cli.add_command(add_investment)
 cli.add_command(get_investment_value) 
 cli.add_command(import_investments)
+cli.add_command(export_investments)
 
 if __name__=="__main__":
     database = sqlite3.connect("portfolio.db")
