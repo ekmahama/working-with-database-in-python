@@ -76,6 +76,17 @@ def import_investments(csv_file):
 
         print(f"Imported {len(rows)} investments from {csv_file}")
 
+@click.command()
+@click.option('--file_name')
+def export_investments(file_name):
+    with open(file_name, '+a') as f:
+        writer = csv.writer(f, delimiter=",")
+        sql = "SELECT * FROM investments"
+        rows = cur.execute(sql).fetchall()
+        writer.writerows(rows)
+
+        print(f'Exported {len(rows)} investments to {file_name}')
+
 cli.add_command(show_coin_price)
 cli.add_command(add_investment)
 cli.add_command(get_investment_value) 
