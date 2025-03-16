@@ -22,7 +22,16 @@ class Investment:
 
     def compute_value(self) -> float:
         return self.amount * get_coin_price(self.coin_id, self.currency)
-     
+
+def investment_row_factory(_, row):
+    return Investment(
+        coin_id=row[0],
+        currency=row[1],
+        amount= row[2],
+        sell = bool(row[3]),
+        date = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S.%f")
+    )
+
 def get_coin_price(coin_id:str, currency:str):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies={currency}"
     data = requests.get(url).json()
@@ -63,7 +72,7 @@ def add_investment(coin_id, currency, amount, sell):
 def get_investment_value(coin_id: str, currency:str):
      coin_price = get_coin_price(coin_id, currency)
      sql = """
-        SELECT amount FROM investments
+        SELECT * FROM investments
         WHERE coin_id =?
         AND currency=?
         AND sell=?;
@@ -71,8 +80,8 @@ def get_investment_value(coin_id: str, currency:str):
      buy_result = cur.execute(sql, (coin_id, currency, False)).fetchall()
      sell_result = cur.execute(sql, (coin_id, currency, True)).fetchall()
 
-     buy_amount = sum([row[0] for row in buy_result])
-     sell_amount = sum([row[0] for row in sell_result])
+     buy_amount = sum([row.amount for row in buy_result])
+     sell_amount = sum([row.amount for row in sell_result])
      total = buy_amount + sell_amount
      print(f"You won a total of {total} {coin_id} worth of {total * coin_price} {currency.upper()}")
 
@@ -107,6 +116,7 @@ cli.add_command(export_investments)
 
 if __name__=="__main__":
     database = sqlite3.connect("portfolio.db")
+    database.row_factory = investment_row_factory
     cur = database.cursor()
     cur.execute(CREATE_INVESTMENTS_SQL)
     cli()
