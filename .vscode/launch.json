@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["show-coin-price", "--coin_id", "bitcoin", "--currency", "usd"]
+            "args": ["get-investment-value", "--coin_id", "bitcoin", "--currency", "usd"]
         }
     ]
 }
