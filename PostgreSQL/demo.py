@@ -35,6 +35,9 @@ data = [
 select_sql ="""
 SELECT * FROM investments where coin =%s
 """
+
+select_all_sql = """SELECT * from investments;"""
+
 def get_connection():
     connection = psycopg2.connect(
         host = "localhost",
@@ -78,7 +81,7 @@ def add_bitcoin_investments_parameterized(sql_template, data):
     connection.close()
 
 @click.command()
-@click.option("--sql", default=select_sql)
+@click.option("--sql", default=select_all_sql)
 @click.option('--parameter', default=None)
 def get_investments(sql, parameter):
     connection = get_connection()
@@ -86,7 +89,7 @@ def get_investments(sql, parameter):
     if parameter:
         cursor.execute(sql, (parameter,))
     else:
-        cursor.execute("SELECT * FROM investments;")
+        cursor.execute(sql)
     data = cursor.fetchall()
     print(data)
     cursor.close()
