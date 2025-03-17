@@ -1,5 +1,14 @@
 import psycopg2, click
 import psycopg2.extras
+from dataclasses import dataclass
+
+
+@dataclass
+class Investments:
+    id: int
+    coin: str
+    currency: str
+    amount : float
 
 CREATE_INVESTMENTS_TABLE = """
 CREATE TABLE IF NOT EXISTS investments (
@@ -85,7 +94,7 @@ def add_bitcoin_investments_parameterized(sql_template, data):
 @click.option('--parameter', default=None)
 def get_investments(sql, parameter):
     connection = get_connection()
-    cursor = connection.cursor()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     if parameter:
         cursor.execute(sql, (parameter,))
     else:
@@ -95,6 +104,24 @@ def get_investments(sql, parameter):
     cursor.close()
     connection.close()
 
+
+@click.command()
+@click.option("--sql", default=select_all_sql)
+@click.option('--parameter', default=None)
+def get_investments_cursor_factory(sql, parameter):
+    connection = get_connection()
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    if parameter:
+        cursor.execute(sql, (parameter,))
+    else:
+        cursor.execute(sql)
+    data = [Investments(**dict(row)) for row in cursor.fetchall()]
+    print(data)
+    cursor.close()
+    connection.close()
+
+
+
 @click.group()
 def cli():
     pass
@@ -102,6 +129,7 @@ def cli():
 cli.add_command(create_table)
 cli.add_command(add_bitcoin_investments)
 cli.add_command(add_bitcoin_investments_parameterized)
+cli.add_command(get_investments_cursor_factory)
 cli.add_command(get_investments)
 
 if __name__ =='__main__':
