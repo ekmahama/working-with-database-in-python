@@ -1,4 +1,4 @@
-from sqlalchemy import String, Numeric, create_engine
+from sqlalchemy import String, Numeric, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
 
@@ -26,8 +26,13 @@ solana = Investment(coin="solana", currency='usd', amount = 10.0)
 
 
 with Session(engine) as session:
-    session.add(bitcoin)
-    session.add_all([ethereum, solana])
+    # session.add(bitcoin)
+    # session.add_all([ethereum, solana])
 
-    session.commit()
+    # session.commit()
+
+    stmt = select(Investment).where(Investment.coin == "bitcoin")
+    print(stmt)
+    investment = session.execute(stmt).scalar_one()
+    print(investment)
 
