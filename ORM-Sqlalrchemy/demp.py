@@ -31,16 +31,19 @@ with Session(engine) as session:
 
     # session.commit()
 
+    # this will throw exception if "bitcoin" does not exist
     stmt = select(Investment).where(Investment.coin == "bitcoin")
     print(stmt)
     investment = session.execute(stmt).scalar_one()
     print(investment)
 
     # retrieve with primay key
+    # this will return None if primary key does not exist
     ethereum = session.get(Investment, 2)
     print(solana)
 
     # Get all
+    # This will return None for empty list
     stmt = select(Investment).where(Investment.amount > 1)
     all_investments = session.execute(stmt).scalars().all()
     for invest in all_investments:
