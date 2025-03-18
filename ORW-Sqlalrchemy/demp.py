@@ -14,3 +14,7 @@ class Investment(Base):
 
     def __str__(self):
         return f"<Investment coin: :{self.coin}, currency: {self.currency}, amount: {self.amount}>"
+    
+
+engine = create_engine("sqlite:///demo.db")
+Base.metadata.create_all(engine)
