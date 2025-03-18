@@ -1,5 +1,5 @@
 from sqlalchemy import String, Numeric, create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
 
 class Base(DeclarativeBase):
@@ -18,3 +18,16 @@ class Investment(Base):
 
 engine = create_engine("sqlite:///demo.db")
 Base.metadata.create_all(engine)
+
+
+bitcoin = Investment(coin="bitcoin", currency='usd', amount = 1.0)
+ethereum = Investment(coin="ethereum", currency='gpb', amount = 2.0)
+solana = Investment(coin="solana", currency='usd', amount = 10.0)
+
+
+with Session(engine) as session:
+    session.add(bitcoin)
+    session.add_all([ethereum, solana])
+
+    session.commit()
+
