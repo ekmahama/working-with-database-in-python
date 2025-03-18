@@ -46,7 +46,20 @@ with Session(engine) as session:
     # This will return None for empty list
     stmt = select(Investment).where(Investment.amount > 1)
     all_investments = session.execute(stmt).scalars().all()
-    for invest in all_investments:
-        print(invest)
+    # for invest in all_investments:
+    #     print(invest)
+
+    # Update 
+    bitcoin = session.get(Investment, 1)
+    bitcoin.amount = 5.5
+    print(session.dirty)
+    session.commit()
+    print(bitcoin)
+
+    # Delete
+    solana = session.get(Investment,2)
+    session.delete(solana)
+    print(session.deleted)
+    session.commit()
 
 
