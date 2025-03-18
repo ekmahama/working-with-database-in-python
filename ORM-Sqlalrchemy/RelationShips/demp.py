@@ -16,7 +16,7 @@ class Investment(Base):
         return f"<Investment coin: :{self.coin}, currency: {self.currency}, amount: {self.amount}>"
     
 
-engine = create_engine("sqlite:///demo.db")
+engine = create_engine("sqlite:///demo_r.db")
 Base.metadata.create_all(engine)
 
 
