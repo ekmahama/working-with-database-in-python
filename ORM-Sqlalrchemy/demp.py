@@ -36,3 +36,14 @@ with Session(engine) as session:
     investment = session.execute(stmt).scalar_one()
     print(investment)
 
+    # retrieve with primay key
+    ethereum = session.get(Investment, 2)
+    print(solana)
+
+    # Get all
+    stmt = select(Investment).where(Investment.amount > 1)
+    all_investments = session.execute(stmt).scalars().all()
+    for invest in all_investments:
+        print(invest)
+
+
