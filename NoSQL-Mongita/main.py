@@ -70,14 +70,15 @@ def import_investments(csv_file):
 @click.option('--file_name')
 def export_investments(file_name):
     with open(file_name, '+a') as f:
-        writer = csv.writer(f, delimiter=",")
+        writer = csv.writer(f)
         # sql = "SELECT * FROM investments"
         # rows = cur.execute(sql).fetchall()
         docs = investments.find({})
+        writer.writerow(["crypto","currency", "amount", "timestamp"])
         for doc in docs:
-            writer.writerows([doc['coin_id'], doc['currency'], doc['amount'], doc['timestamp']])
+            writer.writerow([doc['coin_id'], doc['currency'], doc['amount'], doc['timestamp']])
 
-        print(f'Exported {len(docs)} investments to {file_name}')
+        print(f'Exported {len(list(docs))} investments to {file_name}')
 
 cli.add_command(show_coin_price)
 cli.add_command(add_investment)
