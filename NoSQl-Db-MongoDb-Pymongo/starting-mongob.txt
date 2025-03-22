@@ -1,0 +1,1 @@
+## run "mongod --dbpath=/Users/edwardmahama/data/db" on terminal to start it.
