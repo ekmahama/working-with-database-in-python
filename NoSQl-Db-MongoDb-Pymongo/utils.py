@@ -4,10 +4,10 @@ def get_random_datetime():
     return datetime.datetime.now() - datetime.timedelta(days=random.randint(1,7))
 
 def get_coin_price(coin_id:str, currency:str):
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies={currency}"
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(coin_id)}&vs_currencies={currency}"
     data = requests.get(url).json()
-    coin_price = data[coin_id][currency]
-    return coin_price
+    coin_prices = dict([(coin_id, data[coin_id][currency]) for coin_id in data])
+    return coin_prices
 
 def util_seed_data(collection):
     collection.insert_many([
