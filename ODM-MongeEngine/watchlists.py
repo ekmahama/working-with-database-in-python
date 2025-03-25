@@ -72,6 +72,29 @@ def add_watchlist(name,description, currency):
 
     print(f"Added watchlist {name}")
 
+@click.command(help="Veiw the coins in watchlist")
+def view_watchlist():
+    selected_watchlist = _select_watchlist()
+    coins = [coin.coin for coin in selected_watchlist.coins]
+    coin_prices = get_coin_price(coins, selected_watchlist.metadata.currency.lower())
+
+    print(f"Watchlist: {selected_watchlist.name} in {selected_watchlist.metadata.currency}")
+    print(f"{selected_watchlist.metadata.description}")
+
+    for index, coin in enumerate(selected_watchlist):
+        print(f"{index + 1}: {coin} | {coin_prices[coin]}")
+    print("Prices by CoinGecko")
+
+
+@click.command("Add coin to watchlist")
+@click.option("--coin", prompt=True)
+@click.option("--note", prompt=True)
+def add_coin(coin, note):
+    selected_watchlist = _select_watchlist()
+    selected_watchlist.coins.append(WatchlistCoin(coin=coin, note= note))
+    selected_watchlist.save()
+    print(f"Added {coin} to {selected_watchlist.name}")
+
 
 @click.group()
 def cli():
