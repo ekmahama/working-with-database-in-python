@@ -1,7 +1,7 @@
 import datetime, random, requests
 
 def get_random_datetime():
-    return datetime.datetime.now - datetime.timedelta(days=random.randint(1,7))
+    return datetime.datetime.now() - datetime.timedelta(days=random.randint(1,7))
 
 def get_coin_price(coin_id:str, currency:str):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies={currency}"
