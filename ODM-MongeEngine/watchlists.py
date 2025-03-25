@@ -11,14 +11,13 @@ def get_coin_price(coin_id:str, currency:str):
 def _seed_data():
     data = [
         ("Bulls", "Coins to buy", "USD", [("bitcoin", "Bitcoin is number one"),("ethereum", "ethereum is number 2")]),
-        ("Bears", "Coins to sell", "USD", [("solan", "Mee..."),]),
-        ]
+        ("Bears", "Coins to sell", "USD", [("solan", "Mee..."),])]
 
     for row in data:
         Watchlist(
             name = row[0],
             metadata = WatchListMetadata(description=row[1], currency=row[2]),
-            coins = [WatchlistCoin(coin=coin[0], note=coin) for coin in row[3]]
+            coins = [WatchlistCoin(coin=coin[0], note=coin) for coin in row[3][0]]
         ).save()
 
 def _select_watchlist():
