@@ -107,4 +107,5 @@ cli.add_command(add_watchlist)
 cli.add_command(add_coin)
 
 if __name__ == "__main__":
+    connect("portfolio_me")
     cli()
