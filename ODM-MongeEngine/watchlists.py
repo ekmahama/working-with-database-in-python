@@ -22,11 +22,11 @@ def _seed_data():
         ).save()
 
 def _select_watchlist():
-    investment_coins = Watchlist.objects.all().fields(coin=1)
-    for index, coin in enumerate(investment_coins):
+    watchlist_coins = Watchlist.objects.all().fields(coin=1)
+    for index, coin in enumerate(watchlist_coins):
         print(f"{index+1}: {coin.coin}")
     selected_watchlist_index = int(input("Select a watchlist: ")) - 1
-    selected_watchlist_oid = investment_coins[selected_watchlist_index].id
+    selected_watchlist_oid = watchlist_coins[selected_watchlist_index].id
     return Watchlist.objects(id=selected_watchlist_oid).first()
 
 
@@ -42,7 +42,7 @@ class WatchlistCoin(EmbeddedDocument):
 
 class Watchlist(Document):
     name = fields.StringField(max_length=256)
-    metadata = fields.EmbeddedDocument(WatchListMetadata)
+    metadata = fields.EmbeddedDocumentField(WatchListMetadata)
     coins = fields.EmbeddedDocumentListField(WatchlistCoin)
 
     def __str__(self):
@@ -102,6 +102,9 @@ def cli():
 
 cli.add_command(clear_data)
 cli.add_command(seed_data)
+cli.add_command(view_watchlist)
+cli.add_command(add_watchlist)
+cli.add_command(add_coin)
 
 if __name__ == "__main__":
     cli()
