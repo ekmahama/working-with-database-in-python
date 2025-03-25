@@ -37,7 +37,7 @@ def _select_coin_from_watchlist(watchlist):
     for index, coin in enumerate(watchlist["coins"]):
         print(f"{index + 1}: {coin['coin']}")
     selected_coin_index = int(input("Select a coin: ")) - 1
-    return watchlists["coins"][selected_coin_index]
+    return watchlist["coins"][selected_coin_index]
 
 
 @click.command(help="Clear the database")
@@ -76,7 +76,7 @@ def view_watchlists():
 @click.command(help="Add a new watchlist to the portfolio")
 @click.option("--name", prompt=True, help="Naem of the watchlist")
 @click.option("--description", prompt=True, help="Description of the watchlist")
-@click.option("--currenct", prompt=True, help="Currency to display prices")
+@click.option("--currency", prompt=True, help="Currency to display prices")
 def add_watchlist(name, description, currency):
     metadata = {
         "description": description,
@@ -108,7 +108,7 @@ def remove_coin():
     selected_watchlist = _select_watchlist(_get_all_watchlist_name())
     selected_coin = _select_coin_from_watchlist(selected_watchlist)
 
-    _remove_coin_from_watchlist(selected_coin['_id'], selected_coin['coin'])
+    _remove_coin_from_watchlist(selected_watchlist['_id'], selected_coin['coin'])
     print(f"Removed {selected_coin} from {selected_watchlist['name']}")
     
 
