@@ -48,6 +48,30 @@ class Watchlist(Document):
     def __str__(self):
         return f"<Watchlist name ={self.name}, currency ={self.metadata.currency} with {len(self.coins)} coins>"
 
+@click.command(help="Clear the database")
+def clear_data():
+    Watchlist.drop_collection()
+    print("Cleared data!")
+
+@click.command(help="Seed the database with sample data, use the --force flag to ignore existing data")
+@click.option("--force", is_flag=True, default=False)
+def seed_data(force):
+    if force:
+        _seed_data()
+    elif Watchlist.objects.count() > 0:
+        print("Data not empty! Use --force flag to seed database")
+
+@click.command(help="Add a new watchlist to the portfolia")
+@click.option("--name", prompt=True)
+@click.option("--description", prompt=True)
+@click.option("--currency", prompt=True)
+def add_watchlist(name,description, currency):
+    metadata = WatchListMetadata(currency = currency, description = description)
+    watchlist = Watchlist(name=name, metadata=metadata, coins = [])
+    watchlist.save()
+
+    print(f"Added watchlist {name}")
+
 
 @click.group()
 def cli():
