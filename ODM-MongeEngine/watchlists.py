@@ -77,5 +77,8 @@ def add_watchlist(name,description, currency):
 def cli():
     pass
 
+cli.add_command(clear_data)
+cli.add_command(seed_data)
+
 if __name__ == "__main__":
     cli()
