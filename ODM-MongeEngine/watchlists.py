@@ -21,9 +21,9 @@ def _seed_data():
         ).save()
 
 def _select_watchlist():
-    watchlist_coins = Watchlist.objects.all().fields(coins=1)
-    for index, coin in enumerate(watchlist_coins):
-        print(f"{index+1}: {coin}")
+    watchlist_names = Watchlist.objects.all().fields(name=1)
+    for index, name in enumerate(watchlist_names):
+        print(f"{index+1}: {name.name}")
     selected_watchlist_index = int(input("Select a watchlist: ")) - 1
     selected_watchlist_oid = watchlist_coins[selected_watchlist_index].id
     return Watchlist.objects(id=selected_watchlist_oid).first()
