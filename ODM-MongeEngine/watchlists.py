@@ -25,11 +25,11 @@ def _select_watchlist():
     for index, name in enumerate(watchlist_names):
         print(f"{index+1}: {name.name}")
     selected_watchlist_index = int(input("Select a watchlist: ")) - 1
-    selected_watchlist_oid = watchlist_coins[selected_watchlist_index].id
+    selected_watchlist_oid = watchlist_names[selected_watchlist_index].id
     return Watchlist.objects(id=selected_watchlist_oid).first()
 
 
-class WatchListMetadata(EmbeddedDocument):
+class WatchlistMetadata(EmbeddedDocument):
     currency = fields.StringField(max_length=3)
     description = fields.StringField()
     date_created = fields.DateField(default=datetime.datetime.now().date)
@@ -41,7 +41,7 @@ class WatchlistCoin(EmbeddedDocument):
 
 class Watchlist(Document):
     name = fields.StringField(max_length=256)
-    metadata = fields.EmbeddedDocumentField(WatchListMetadata)
+    metadata = fields.EmbeddedDocumentField(WatchlistMetadata)
     coins = fields.EmbeddedDocumentListField(WatchlistCoin)
 
     def __str__(self):
@@ -65,7 +65,7 @@ def seed_data(force):
 @click.option("--description", prompt=True)
 @click.option("--currency", prompt=True)
 def add_watchlist(name,description, currency):
-    metadata = WatchListMetadata(currency = currency, description = description)
+    metadata = WatchlistMetadata(currency = currency, description = description)
     watchlist = Watchlist(name=name, metadata=metadata, coins = [])
     watchlist.save()
 
