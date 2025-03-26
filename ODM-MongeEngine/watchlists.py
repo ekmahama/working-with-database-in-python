@@ -80,7 +80,7 @@ def view_watchlist():
     print(f"Watchlist: {selected_watchlist.name} in {selected_watchlist.metadata.currency}")
     print(f"{selected_watchlist.metadata.description}")
 
-    for index, coin in enumerate(selected_watchlist):
+    for index, coin in enumerate(coins):
         print(f"{index + 1}: {coin} | {coin_prices[coin]}")
     print("Prices by CoinGecko")
 
