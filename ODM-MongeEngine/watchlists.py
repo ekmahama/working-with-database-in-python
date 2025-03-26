@@ -16,8 +16,8 @@ def _seed_data():
     for row in data:
         Watchlist(
             name = row[0],
-            metadata = WatchListMetadata(description=row[1], currency=row[2]),
-            coins = [WatchlistCoin(coin=coin[0], note=coin) for coin in row[3][0]]
+            metadata = WatchlistMetadata(description=row[1], currency=row[2]),
+            coins = [WatchlistCoin(coin=coin[0], note=coin[1]) for coin in row[3]]
         ).save()
 
 def _select_watchlist():
