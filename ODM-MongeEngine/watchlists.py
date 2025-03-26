@@ -1,24 +1,33 @@
-import datetime, random, click, requests
+import datetime
+import random
+import click
+import requests
 from mongoengine import fields
 from mongoengine import connect, Document, EmbeddedDocument, EmbeddedDocumentField, EmbeddedDocumentListField
 
-def get_coin_price(coin_id:str, currency:str):
+
+def get_coin_price(coin_id: str, currency: str):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(coin_id)}&vs_currencies={currency}"
     data = requests.get(url).json()
-    coin_prices = dict([(coin_id, data[coin_id][currency]) for coin_id in data])
+    coin_prices = dict([(coin_id, data[coin_id][currency])
+                       for coin_id in data])
     return coin_prices
+
 
 def _seed_data():
     data = [
-        ("Bulls", "Coins to buy", "USD", [("bitcoin", "Bitcoin is number one"),("ethereum", "ethereum is number 2")]),
+        ("Bulls", "Coins to buy", "USD", [
+         ("bitcoin", "Bitcoin is number one"), ("ethereum", "ethereum is number 2")]),
         ("Bears", "Coins to sell", "USD", [("solan", "Mee..."),])]
 
     for row in data:
         Watchlist(
-            name = row[0],
-            metadata = WatchlistMetadata(description=row[1], currency=row[2]),
-            coins = [WatchlistCoin(coin=coin[0], note=coin[1]) for coin in row[3]]
+            name=row[0],
+            metadata=WatchlistMetadata(description=row[1], currency=row[2]),
+            coins=[WatchlistCoin(coin=coin[0], note=coin[1])
+                   for coin in row[3]]
         ).save()
+
 
 def _select_watchlist():
     watchlist_names = Watchlist.objects.all().fields(name=1)
@@ -34,10 +43,12 @@ class WatchlistMetadata(EmbeddedDocument):
     description = fields.StringField()
     date_created = fields.DateField(default=datetime.datetime.now().date)
 
+
 class WatchlistCoin(EmbeddedDocument):
     coin = fields.StringField(max_length=32)
     note = fields.StringField()
     date_added = fields.DateField(default=datetime.datetime.now().date)
+
 
 class Watchlist(Document):
     name = fields.StringField(max_length=256)
@@ -47,10 +58,12 @@ class Watchlist(Document):
     def __str__(self):
         return f"<Watchlist name ={self.name}, currency ={self.metadata.currency} with {len(self.coins)} coins>"
 
+
 @click.command(help="Clear the database")
 def clear_data():
     Watchlist.drop_collection()
     print("Cleared data!")
+
 
 @click.command(help="Seed the database with sample data, use the --force flag to ignore existing data")
 @click.option("--force", is_flag=True, default=False)
@@ -60,24 +73,28 @@ def seed_data(force):
     elif Watchlist.objects.count() > 0:
         print("Data not empty! Use --force flag to seed database")
 
+
 @click.command(help="Add a new watchlist to the portfolia")
 @click.option("--name", prompt=True)
 @click.option("--description", prompt=True)
 @click.option("--currency", prompt=True)
-def add_watchlist(name,description, currency):
-    metadata = WatchlistMetadata(currency = currency, description = description)
-    watchlist = Watchlist(name=name, metadata=metadata, coins = [])
+def add_watchlist(name, description, currency):
+    metadata = WatchlistMetadata(currency=currency, description=description)
+    watchlist = Watchlist(name=name, metadata=metadata, coins=[])
     watchlist.save()
 
     print(f"Added watchlist {name}")
+
 
 @click.command(help="Veiw the coins in watchlist")
 def view_watchlist():
     selected_watchlist = _select_watchlist()
     coins = [coin.coin for coin in selected_watchlist.coins]
-    coin_prices = get_coin_price(coins, selected_watchlist.metadata.currency.lower())
+    coin_prices = get_coin_price(
+        coins, selected_watchlist.metadata.currency.lower())
 
-    print(f"Watchlist: {selected_watchlist.name} in {selected_watchlist.metadata.currency}")
+    print(
+        f"Watchlist: {selected_watchlist.name} in {selected_watchlist.metadata.currency}")
     print(f"{selected_watchlist.metadata.description}")
 
     for index, coin in enumerate(coins):
@@ -90,7 +107,7 @@ def view_watchlist():
 @click.option("--note", prompt=True)
 def add_coin(coin, note):
     selected_watchlist = _select_watchlist()
-    selected_watchlist.coins.append(WatchlistCoin(coin=coin, note= note))
+    selected_watchlist.coins.append(WatchlistCoin(coin=coin, note=note))
     selected_watchlist.save()
     print(f"Added {coin} to {selected_watchlist.name}")
 
@@ -98,6 +115,7 @@ def add_coin(coin, note):
 @click.group()
 def cli():
     pass
+
 
 cli.add_command(clear_data)
 cli.add_command(seed_data)
