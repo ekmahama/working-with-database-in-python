@@ -85,7 +85,7 @@ def view_watchlist():
     print("Prices by CoinGecko")
 
 
-@click.command("Add coin to watchlist")
+@click.command(help="Add coin to watchlist")
 @click.option("--coin", prompt=True)
 @click.option("--note", prompt=True)
 def add_coin(coin, note):
