@@ -6,7 +6,7 @@ import click
 from mongoengine import connect, Document, fields
 
 
-def get_coin_price(coin_id: str, currency: str):
+def _get_coin_price(coin_id: str, currency: str):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(coin_id)}&vs_currencies={currency}"
     data = requests.get(url).json()
     coin_prices = dict([(coin_id, data[coin_id][currency])
@@ -71,7 +71,7 @@ class Investment(Document):
 @click.command(help="See the datails of the investments")
 def view_investment():
     selected_investment = _select_investment()
-    coin_price = get_coin_price([selected_investment.coin], selected_investment.currency.lower())[
+    coin_price = _get_coin_price([selected_investment.coin], selected_investment.currency.lower())[
         selected_investment.coin]
 
     print(f"You {'bought' if not selected_investment.sell else 'sold'} {selected_investment.amount} {selected_investment.coin}")

@@ -6,7 +6,7 @@ from mongoengine import fields
 from mongoengine import connect, Document, EmbeddedDocument, EmbeddedDocumentField, EmbeddedDocumentListField
 
 
-def get_coin_price(coin_id: str, currency: str):
+def _get_coin_price(coin_id: str, currency: str):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(coin_id)}&vs_currencies={currency}"
     data = requests.get(url).json()
     coin_prices = dict([(coin_id, data[coin_id][currency])
@@ -90,7 +90,7 @@ def add_watchlist(name, description, currency):
 def view_watchlist():
     selected_watchlist = _select_watchlist()
     coins = [coin.coin for coin in selected_watchlist.coins]
-    coin_prices = get_coin_price(
+    coin_prices = _get_coin_price(
         coins, selected_watchlist.metadata.currency.lower())
 
     print(
